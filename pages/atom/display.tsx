@@ -1,11 +1,17 @@
 import { atom, useRecoilState } from "recoil";
 
-const displayAtom = atom({
+const displayAtom = atom<string[] | number[]>({
   key: "displayAtom",
-  default: 0,
+  default: [],
+});
+
+const memoryAtom = atom<string[] | number[]>({
+  key: "memory",
+  default: [],
 });
 
 export const useDisplay = () => {
   const [displayState, setDisplayState] = useRecoilState(displayAtom);
-  return { displayState, setDisplayState };
+  const [memoryState, setMemoryState] = useRecoilState(memoryAtom);
+  return { displayState, setDisplayState, memoryState, setMemoryState };
 };
