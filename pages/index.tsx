@@ -25,10 +25,11 @@ export default function Home() {
   };
 
   return (
-    <div className="flex flex-col place-items-center mt-40">
-      <div className="shadow-md shadow-black">
+    <div className="flex flex-col place-items-center mt-16 ">
+      <div className="shadow-xl shadow-black">
         {renderMemory()}
         {renderVisor()}
+
         <div className="grid grid-cols-4 w-56">
           <Square textProp="+/-" />
           <Square textProp="%" />
@@ -50,7 +51,11 @@ export default function Home() {
           <Square textProp="," />
           <Square textProp="=" doubleWidth className=" text-3xl bg-slate-800" />
         </div>
+        <div className="absolute text-white bg-gray-600 w-56 h-3 border-x-[1px] border-black shadow-sm shadow-black "></div>
       </div>
+      <div className="relative left-[118px] bottom-[195.2px] bg-gray-600 w-[405.5px] h-3 border-[1px] border-black shadow-md shadow-black -rotate-90 opacity-50"></div>
+      <div className="relative left-[124px] bottom-[203px] bg-black w-[405.5px] h-1 border-x-[1px] border-black  -rotate-90 opacity-80"></div>
+      <div>made by Leonardo Zanini</div>
     </div>
   );
 }

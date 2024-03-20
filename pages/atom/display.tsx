@@ -2,7 +2,7 @@ import { atom, useRecoilState } from "recoil";
 
 const displayAtom = atom<string[] | number[]>({
   key: "displayAtom",
-  default: [],
+  default: [0],
 });
 
 const memoryAtom = atom<string[] | number[]>({
@@ -10,8 +10,22 @@ const memoryAtom = atom<string[] | number[]>({
   default: [],
 });
 
+const buttonsPressedAtom = atom<string[] | number[]>({
+  key: "buttonsPressed",
+  default: [],
+});
+
 export const useDisplay = () => {
   const [displayState, setDisplayState] = useRecoilState(displayAtom);
   const [memoryState, setMemoryState] = useRecoilState(memoryAtom);
-  return { displayState, setDisplayState, memoryState, setMemoryState };
+  const [buttonsPressed, setButtonsPressed] =
+    useRecoilState(buttonsPressedAtom);
+  return {
+    displayState,
+    setDisplayState,
+    memoryState,
+    setMemoryState,
+    buttonsPressed,
+    setButtonsPressed,
+  };
 };

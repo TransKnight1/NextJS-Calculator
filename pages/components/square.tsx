@@ -1,5 +1,6 @@
 "use client";
 import { useDisplay } from "../atom/display";
+import { equalIsPressed } from "../utils/equalIsPressed";
 
 interface SquareProps {
   textProp: string | number;
@@ -8,77 +9,70 @@ interface SquareProps {
 }
 
 export const Square = ({ textProp, doubleWidth, className }: SquareProps) => {
-  const { setDisplayState, displayState, memoryState, setMemoryState } =
-    useDisplay();
-
-  // Todo: % logic not working yet
-  // Logic after operation is weird, it should reset to the number that was inputed
-  // equals should repeat the last operation
-  // eval should run if operation button is pressed again after being pressed already after a number
+  const {
+    setDisplayState,
+    displayState,
+    memoryState,
+    setMemoryState,
+    buttonsPressed,
+    setButtonsPressed,
+  } = useDisplay();
 
   const handleButton = (value: any) => {
     const lastCharDisplay = displayState.slice(-1).toString();
     const lastCharMemory = memoryState.slice(-1).toString();
-
-    const equalIsPressed = () => {
-      const operation = memoryState[memoryState.length - 1];
-      const num1 = parseFloat(memoryState.slice(0, -1).join(""));
-      const num2 = parseFloat(displayState.join(""));
-
-      console.log(`num1 ${num1}`);
-      console.log(`num2 ${num2}`);
-      console.log(`operation ${operation}`);
-
-      let result: number = 0;
-      switch (operation) {
-        case "+":
-          result = num1 + num2;
-          break;
-        case "-":
-          result = num1 - num2;
-          break;
-        case "X":
-          result = num1 * num2;
-          break;
-        case "/":
-          result = num1 / num2;
-          break;
-        default:
-          break;
-      }
-      return result;
-    };
+    const lastCharPressed = buttonsPressed.slice(-1).toString();
+    const operation = memoryState[memoryState.length - 1];
+    const num1 = parseFloat(
+      memoryState.slice(0, -1).join("").replace(/\./g, "").replace(",", ".")
+    );
+    const num2 = parseFloat(
+      displayState.join("").replace(/\./g, "").replace(",", ".")
+    );
 
     switch (value) {
       case "DEL":
+        setButtonsPressed([]);
         setDisplayState([0]);
         setMemoryState([]);
         break;
       case "=":
-        const result = equalIsPressed();
-        setDisplayState([result]);
-        setMemoryState([...memoryState, displayState, value]);
+        if (lastCharPressed === "=") {
+          const result = equalIsPressed(num2, num2, operation);
+        } else {
+          const result = equalIsPressed(num1, num2, operation);
+          setDisplayState([result]);
+          setMemoryState([...memoryState, displayState, value]);
+          setButtonsPressed([...buttonsPressed, value]);
+        }
         break;
       case "+":
       case "-":
       case "X":
       case "/":
+        setButtonsPressed([...buttonsPressed, value]);
         const isLastCharIsOperator = ["+", "-", "X", "/"].includes(
           lastCharMemory
         );
         const isLastCharIsNumber = !isNaN(parseInt(lastCharDisplay));
         if (isLastCharIsOperator && isLastCharIsNumber) {
-          const result = equalIsPressed();
+          const result = equalIsPressed(num1, num2, operation);
           setDisplayState([result]);
           setMemoryState([result, value]);
         } else {
           setMemoryState([...displayState, value]);
         }
         break;
+      case ",":
+        if (!displayState.includes(",")) {
+          setDisplayState([...displayState, value]);
+        }
+        break;
       default:
+        setButtonsPressed([...buttonsPressed, value]);
         if (displayState.length === 1 && displayState[0] === 0) {
           setDisplayState([value]);
-        } else if (["+", "-", "X", "/"].includes(lastCharMemory)) {
+        } else if (["+", "-", "X", "/"].includes(lastCharPressed)) {
           setDisplayState([value]);
         } else {
           setDisplayState([...displayState, value]);
@@ -89,6 +83,7 @@ export const Square = ({ textProp, doubleWidth, className }: SquareProps) => {
 
   console.log(`memoryTest ${memoryState}`);
   console.log(`displayTest ${displayState}`);
+  console.log(`buttonsPressed ${buttonsPressed}`);
   return (
     <button
       onClick={() => handleButton(textProp)}
