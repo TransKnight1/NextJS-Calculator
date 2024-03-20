@@ -1,7 +1,7 @@
 export const equalIsPressed = (
   num1: number,
   num2: number,
-  operation: string | number
+  operation: string | number | null
 ) => {
   let result: number = 0;
   switch (operation) {
@@ -21,13 +21,13 @@ export const equalIsPressed = (
       break;
   }
 
-  // Arredondar o resultado para 11 dígitos significativos
-  const roundedResult = parseFloat(result.toFixed(11));
+  // Arredonda o resultado para até 10 casas decimais
+  const roundedResult = parseFloat(result.toFixed(10));
 
-  // Remover zeros à direita, se o resultado for um número inteiro
-  const formattedResult = Number.isInteger(roundedResult)
-    ? roundedResult.toFixed(0)
-    : roundedResult.toFixed(11);
+  // Formata o resultado como uma string com no máximo 2 casas decimais
+  const formattedResult = roundedResult.toLocaleString(undefined, {
+    maximumFractionDigits: 11,
+  });
 
   return formattedResult;
 };

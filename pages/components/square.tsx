@@ -18,17 +18,32 @@ export const Square = ({ textProp, doubleWidth, className }: SquareProps) => {
     setButtonsPressed,
   } = useDisplay();
 
+  const conversionComma = (value: string) => {
+    return parseFloat(value.replace(/\./g, "").replace(",", "."));
+  };
+
   const handleButton = (value: any) => {
+    const validOperators = ["+", "-", "X", "/"].map((operator) =>
+      operator.toString()
+    );
+    const lastValidOperatorIndex = memoryState
+      .slice()
+      .reverse()
+      .findIndex((item) => validOperators.includes(item.toString()));
+
+    const operation =
+      lastValidOperatorIndex !== -1
+        ? memoryState[memoryState.length - lastValidOperatorIndex - 1]
+        : null;
     const lastCharDisplay = displayState.slice(-1).toString();
     const lastCharMemory = memoryState.slice(-1).toString();
     const lastCharPressed = buttonsPressed.slice(-1).toString();
-    const operation = memoryState[memoryState.length - 1];
-    const num1 = parseFloat(
-      memoryState.slice(0, -1).join("").replace(/\./g, "").replace(",", ".")
-    );
-    const num2 = parseFloat(
-      displayState.join("").replace(/\./g, "").replace(",", ".")
-    );
+
+    const num1 = conversionComma(memoryState.slice(0, -1).join(""));
+    const num2 = conversionComma(displayState.join(""));
+    const currentValue = parseFloat(displayState.join(""));
+    console.log(lastCharPressed);
+    console.log(operation);
 
     switch (value) {
       case "DEL":
@@ -38,7 +53,11 @@ export const Square = ({ textProp, doubleWidth, className }: SquareProps) => {
         break;
       case "=":
         if (lastCharPressed === "=") {
-          const result = equalIsPressed(num2, num2, operation);
+          const result = equalIsPressed(num1, num2, operation);
+          setDisplayState([result]);
+          const newMemoryState = memoryState.slice();
+          setMemoryState([newMemoryState, displayState[0]]);
+          setButtonsPressed([...buttonsPressed, value]);
         } else {
           const result = equalIsPressed(num1, num2, operation);
           setDisplayState([result]);
@@ -64,8 +83,21 @@ export const Square = ({ textProp, doubleWidth, className }: SquareProps) => {
         }
         break;
       case ",":
-        if (!displayState.includes(",")) {
+        if (!displayState.toString().includes(",")) {
           setDisplayState([...displayState, value]);
+        }
+        break;
+      case "+/-":
+        setDisplayState([currentValue * -1]);
+        break;
+      case "%":
+        if (memoryState.length === 0) {
+          setDisplayState([currentValue / 100]);
+        } else {
+          const numOriginal = conversionComma(memoryState.join(""));
+          const percentValue = conversionComma(displayState.join(""));
+          const result = numOriginal * (percentValue / 100);
+          setDisplayState([result]);
         }
         break;
       default:
@@ -81,9 +113,10 @@ export const Square = ({ textProp, doubleWidth, className }: SquareProps) => {
     }
   };
 
-  console.log(`memoryTest ${memoryState}`);
-  console.log(`displayTest ${displayState}`);
-  console.log(`buttonsPressed ${buttonsPressed}`);
+  console.log("buttonsPressed", buttonsPressed);
+  console.log("displayState", displayState);
+  console.log("memoryState", memoryState);
+
   return (
     <button
       onClick={() => handleButton(textProp)}
