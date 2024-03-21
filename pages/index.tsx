@@ -1,14 +1,27 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Square } from "./components/square";
 import { useDisplay } from "./atom/display";
 
 export default function Home() {
-  const { displayState, memoryState } = useDisplay();
+  const { display, memory, operationHistory, buttonsPressed } = useDisplay();
+  const lastCharPressed = buttonsPressed.slice(-1).toString();
+  const [showHistory, setShowHistory] = useState(false);
 
-  const renderVisor = () => {
+  useEffect(() => {
+    if (
+      lastCharPressed === "=" &&
+      buttonsPressed[buttonsPressed.length - 2] === "="
+    ) {
+      setShowHistory(true);
+    } else {
+      setShowHistory(false);
+    }
+  }, [lastCharPressed, buttonsPressed]);
+
+  const renderDisplay = () => {
     return (
       <div className="flex w-56 h-14 place-items-center border-x-[1px] border-b-[1px] border-black p-2 text-white text-3xl justify-end">
-        <h1>{displayState}</h1>
+        <h1>{display}</h1>
       </div>
     );
   };
@@ -19,7 +32,18 @@ export default function Home() {
         className="flex w-56 h-14 place-items-center border-x-[1px] border-t-[1px] border-black p-2 text-white text-opacity-50 text-xs
       justify-end"
       >
-        <h1>{memoryState}</h1>
+        <h1>{memory}</h1>
+      </div>
+    );
+  };
+
+  const renderHistory = () => {
+    return (
+      <div
+        className="flex w-56 h-14 place-items-center border-x-[1px] border-t-[1px] border-black p-2 text-white text-opacity-50 text-xs
+      justify-end"
+      >
+        <h1>{operationHistory}</h1>
       </div>
     );
   };
@@ -27,29 +51,33 @@ export default function Home() {
   return (
     <div className="flex flex-col place-items-center mt-16 ">
       <div className="shadow-xl shadow-black">
-        {renderMemory()}
-        {renderVisor()}
+        {showHistory ? renderHistory() : renderMemory()}
+        {renderDisplay()}
 
         <div className="grid grid-cols-4 w-56">
-          <Square textProp="+/-" />
-          <Square textProp="%" />
-          <Square textProp="DEL" />
-          <Square textProp="/" className="text-green-500 text-2xl" />
-          <Square textProp={7} />
-          <Square textProp={8} />
-          <Square textProp={9} />
-          <Square textProp="X" className="text-yellow-500 text-xl" />
-          <Square textProp={4} />
-          <Square textProp={5} />
-          <Square textProp={6} />
-          <Square textProp="-" className="text-red-500 text-3xl" />
-          <Square textProp={1} />
-          <Square textProp={2} />
-          <Square textProp={3} />
-          <Square textProp="+" className="text-blue-500 text-3xl" />
-          <Square textProp={0} />
-          <Square textProp="," />
-          <Square textProp="=" doubleWidth className=" text-3xl bg-slate-800" />
+          <Square stringProp="+/-" />
+          <Square stringProp="%" />
+          <Square stringProp="DEL" />
+          <Square stringProp="/" className="text-green-500 text-2xl" />
+          <Square numberProp={7} />
+          <Square numberProp={8} />
+          <Square numberProp={9} />
+          <Square stringProp="X" className="text-yellow-500 text-xl" />
+          <Square numberProp={4} />
+          <Square numberProp={5} />
+          <Square numberProp={6} />
+          <Square stringProp="-" className="text-red-500 text-3xl" />
+          <Square numberProp={1} />
+          <Square numberProp={2} />
+          <Square numberProp={3} />
+          <Square stringProp="+" className="text-blue-500 text-3xl" />
+          <Square numberProp={0} />
+          <Square stringProp="." />
+          <Square
+            stringProp="="
+            doubleWidth
+            className=" text-3xl bg-slate-800"
+          />
         </div>
         <div className="absolute text-white bg-gray-600 w-56 h-3 border-x-[1px] border-black shadow-sm shadow-black "></div>
       </div>

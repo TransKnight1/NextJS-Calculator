@@ -21,11 +21,7 @@ export const equalIsPressed = (
       break;
   }
 
-  // Arredonda o resultado para até 10 casas decimais
-  const roundedResult = parseFloat(result.toFixed(10));
-
-  // Formata o resultado como uma string com no máximo 2 casas decimais
-  const formattedResult = roundedResult.toLocaleString(undefined, {
+  const formattedResult = result.toLocaleString(undefined, {
     maximumFractionDigits: 11,
   });
 

@@ -15,17 +15,27 @@ const buttonsPressedAtom = atom<string[] | number[]>({
   default: [],
 });
 
+const operationHistoryAtom = atom<string[] | number[]>({
+  key: "operationHistory",
+  default: [],
+});
+
 export const useDisplay = () => {
-  const [displayState, setDisplayState] = useRecoilState(displayAtom);
-  const [memoryState, setMemoryState] = useRecoilState(memoryAtom);
+  const [display, setDisplay] = useRecoilState(displayAtom);
+  const [memory, setMemory] = useRecoilState(memoryAtom);
   const [buttonsPressed, setButtonsPressed] =
     useRecoilState(buttonsPressedAtom);
+  const [operationHistory, setOperationHistory] =
+    useRecoilState(operationHistoryAtom);
+
   return {
-    displayState,
-    setDisplayState,
-    memoryState,
-    setMemoryState,
+    display,
+    setDisplay,
+    memory,
+    setMemory,
     buttonsPressed,
     setButtonsPressed,
+    operationHistory,
+    setOperationHistory,
   };
 };
