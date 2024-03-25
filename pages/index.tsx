@@ -72,7 +72,7 @@ export default function Home() {
           <Square numberProp={3} />
           <Square stringProp="+" className="text-blue-500 text-3xl" />
           <Square numberProp={0} />
-          <Square stringProp="." />
+          <Square stringProp="," />
           <Square
             stringProp="="
             doubleWidth
