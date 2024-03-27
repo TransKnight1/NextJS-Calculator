@@ -1,12 +1,27 @@
 import { atom, useRecoilState } from "recoil";
 
-const displayAtom = atom<string[] | number[]>({
+interface upperDisplayItem {
+  type: "number" | "operator";
+  value: string | number;
+}
+
+const displayAtom = atom<number[]>({
   key: "displayAtom",
   default: [0],
 });
 
-const memoryAtom = atom<string[] | number[]>({
-  key: "memory",
+const upperDisplayAtom = atom<number[] | string[]>({
+  key: "upperDisplayAtom",
+  default: [],
+});
+
+const partialResultAtom = atom<number[]>({
+  key: "partialResult",
+  default: [],
+});
+
+const directManipulationAtom = atom<string[] | number[]>({
+  key: "directManipulation",
   default: [],
 });
 
@@ -15,27 +30,26 @@ const buttonsPressedAtom = atom<string[] | number[]>({
   default: [],
 });
 
-const operationHistoryAtom = atom<string[] | number[]>({
-  key: "operationHistory",
-  default: [],
-});
-
 export const useDisplay = () => {
   const [display, setDisplay] = useRecoilState(displayAtom);
-  const [memory, setMemory] = useRecoilState(memoryAtom);
+  const [upperDisplay, setUpperDisplay] = useRecoilState(upperDisplayAtom);
+  const [partialResult, setPartialResult] = useRecoilState(partialResultAtom);
+  const [directManipulation, setDirectManipulation] = useRecoilState(
+    directManipulationAtom
+  );
   const [buttonsPressed, setButtonsPressed] =
     useRecoilState(buttonsPressedAtom);
-  const [operationHistory, setOperationHistory] =
-    useRecoilState(operationHistoryAtom);
 
   return {
     display,
     setDisplay,
-    memory,
-    setMemory,
+    upperDisplay,
+    setUpperDisplay,
+    partialResult,
+    setPartialResult,
+    directManipulation,
+    setDirectManipulation,
     buttonsPressed,
     setButtonsPressed,
-    operationHistory,
-    setOperationHistory,
   };
 };

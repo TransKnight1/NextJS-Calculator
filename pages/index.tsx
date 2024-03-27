@@ -3,20 +3,8 @@ import { Square } from "./components/square";
 import { useDisplay } from "./atom/display";
 
 export default function Home() {
-  const { display, memory, operationHistory, buttonsPressed } = useDisplay();
-  const lastCharPressed = buttonsPressed.slice(-1).toString();
-  const [showHistory, setShowHistory] = useState(false);
-
-  useEffect(() => {
-    if (
-      lastCharPressed === "=" &&
-      buttonsPressed[buttonsPressed.length - 2] === "="
-    ) {
-      setShowHistory(true);
-    } else {
-      setShowHistory(false);
-    }
-  }, [lastCharPressed, buttonsPressed]);
+  const { display, upperDisplay, partialResult, directManipulation } =
+    useDisplay();
 
   const renderDisplay = () => {
     return (
@@ -32,7 +20,7 @@ export default function Home() {
         className="flex w-56 h-14 place-items-center border-x-[1px] border-t-[1px] border-black p-2 text-white text-opacity-50 text-xs
       justify-end"
       >
-        <h1>{memory}</h1>
+        <h1>{upperDisplay}</h1>
       </div>
     );
   };
@@ -43,7 +31,7 @@ export default function Home() {
         className="flex w-56 h-14 place-items-center border-x-[1px] border-t-[1px] border-black p-2 text-white text-opacity-50 text-xs
       justify-end"
       >
-        <h1>{operationHistory}</h1>
+        <h1>{directManipulation}</h1>
       </div>
     );
   };
@@ -51,33 +39,29 @@ export default function Home() {
   return (
     <div className="flex flex-col place-items-center mt-16 ">
       <div className="shadow-xl shadow-black">
-        {showHistory ? renderHistory() : renderMemory()}
+        {renderMemory()}
         {renderDisplay()}
 
         <div className="grid grid-cols-4 w-56">
-          <Square stringProp="+/-" />
-          <Square stringProp="%" />
-          <Square stringProp="DEL" />
-          <Square stringProp="/" className="text-green-500 text-2xl" />
-          <Square numberProp={7} />
-          <Square numberProp={8} />
-          <Square numberProp={9} />
-          <Square stringProp="X" className="text-yellow-500 text-xl" />
-          <Square numberProp={4} />
-          <Square numberProp={5} />
-          <Square numberProp={6} />
-          <Square stringProp="-" className="text-red-500 text-3xl" />
-          <Square numberProp={1} />
-          <Square numberProp={2} />
-          <Square numberProp={3} />
-          <Square stringProp="+" className="text-blue-500 text-3xl" />
-          <Square numberProp={0} />
-          <Square stringProp="," />
-          <Square
-            stringProp="="
-            doubleWidth
-            className=" text-3xl bg-slate-800"
-          />
+          <Square prop="+/-" />
+          <Square prop="%" />
+          <Square prop="DEL" />
+          <Square prop="/" className="text-green-500 text-2xl" />
+          <Square prop={7} />
+          <Square prop={8} />
+          <Square prop={9} />
+          <Square prop="X" className="text-yellow-500 text-xl" />
+          <Square prop={4} />
+          <Square prop={5} />
+          <Square prop={6} />
+          <Square prop="-" className="text-red-500 text-3xl" />
+          <Square prop={1} />
+          <Square prop={2} />
+          <Square prop={3} />
+          <Square prop="+" className="text-blue-500 text-3xl" />
+          <Square prop={0} />
+          <Square prop="," />
+          <Square prop="=" doubleWidth className=" text-3xl bg-slate-800" />
         </div>
         <div className="absolute text-white bg-gray-600 w-56 h-3 border-x-[1px] border-black shadow-sm shadow-black "></div>
       </div>
