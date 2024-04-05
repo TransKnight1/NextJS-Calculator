@@ -2,9 +2,10 @@
 import { useState } from "react";
 import { useDisplay } from "../atom/display";
 import { equalIsPressed } from "../utils/equalIsPressed";
+import { isNumber } from "util";
 
 interface SquareProps {
-  prop: string | number;
+  prop: string | number | boolean;
   doubleWidth?: boolean;
   className?: string;
 }
@@ -26,20 +27,20 @@ export const Square = ({ prop, doubleWidth, className }: SquareProps) => {
   const [numbers, setNumbers] = useState<number[]>([]);
   const [operationPressed, setOperationPressed] = useState<boolean>(false);
 
-  const handleButton = (prop: string | number) => {
+  const handleButton = (prop: string | number | boolean) => {
     // "x²", "√", "1/x"
-    const storingNumbers = (num: number) => {
-      if (operationPressed) {
-        setNumbers([...numbers, num]);
-      }
-      return numbers;
-    };
-
-    console.log(numbers);
-    console.log(upperDisplay);
-    console.log(operation);
 
     const num1 = parseFloat(display.join(""));
+    if (
+      (typeof prop === "string" && prop !== "DEL") ||
+      typeof prop === "number"
+    ) {
+      const propArray = [];
+      propArray.push(prop);
+      setButtonsPressed(propArray);
+      console.log(propArray);
+      console.log(buttonsPressed);
+    }
 
     switch (prop) {
       case "DEL":
@@ -60,11 +61,6 @@ export const Square = ({ prop, doubleWidth, className }: SquareProps) => {
       case "X":
       case "/":
         if (operationPressed) {
-          console.log("foi executado");
-          console.log(numbers);
-          console.log(numbers[numbers.length - 1]);
-          console.log(numbers[numbers.length]);
-          console.log(operation[operation.length - 1]);
           const result = equalIsPressed(
             numbers[numbers.length - 1],
             parseFloat(display.join("")),
@@ -75,26 +71,31 @@ export const Square = ({ prop, doubleWidth, className }: SquareProps) => {
           setUpperDisplay([result.toString(), prop.toString()]);
         }
         setOperationPressed(true);
-        setNumbers([parseFloat(display.join(""))]);
+        console.log(operationPressed);
         setOperation([prop]);
+        console.log(num1);
         setUpperDisplay([num1.toString(), prop]);
+        setNumbers([num1]);
         setDisplay([num1]);
         break;
-    }
-
-    if (typeof prop === "number") {
-      if (display[0] === 0) {
-        setOperationPressed(false);
-        setDisplay([prop]);
-      } else if (display.length < 13) {
-        setOperationPressed(false);
-        setDisplay([...display, prop]);
-      } else if (operationPressed === true) {
-        setOperationPressed(false);
-        setDisplay([prop]);
-      }
+      default:
+        console.log(operationPressed);
+        if (typeof prop === "number") {
+          if (display[0] === 0) {
+            console.log("rodou");
+            setDisplay([prop]);
+          } else if (display.length < 13) {
+            setDisplay([...display, prop]);
+          } else if (operationPressed === true) {
+            console.log("rodou");
+            setDisplay([prop]);
+          }
+        }
+        "hihi";
+        break;
     }
   };
+  console.log(upperDisplay);
 
   return (
     <button
